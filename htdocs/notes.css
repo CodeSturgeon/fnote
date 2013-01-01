@@ -1,0 +1,39 @@
+/* @override http://localhost:1337/fnote/notes.css */
+
+div.note {
+	border-style: solid;
+	position: absolute;
+	border-width: 2px;
+	overflow: hidden;
+}
+
+div.note-heading {
+	cursor: move;
+	background-color: #d2edff;
+	text-align: center;
+}
+
+div.note-draghandle {
+	background-color: #72ccff;
+	cursor: se-resize;
+	width: 10px;
+	height: 10px;
+	bottom: 0;
+	right: 0;
+	opacity: 0.4;
+	position: absolute;
+}
+
+div.note-content{
+	opacity: 1;
+	background-color: #aefa80;
+	height: 100%;
+	padding: 2px;
+	font-size: small;
+}
+
+div.container {
+	background-color: #ff6348;
+	width: 100%;
+	height: 100%;
+}
