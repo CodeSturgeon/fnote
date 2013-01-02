@@ -193,17 +193,21 @@ function bindNotes(notes) {
     /*jshint es5:true */
     var note = $(event.target).parent();
     var content = note.children('.note-content');
-    var ta = $('<textarea/>',{class:'editing',width:'100%', height:'100%'})
+    content.hide();
+    var ta = $('<textarea/>',{class:'editor'})
+      .width(note.width()-6)
+      .height(note.height()-24)
       .text(content.text())
       .blur(function(event){
         var txt = ta.val();
         var html = txt2Html(txt);
-        content.html(html);
         note.data().cfg.content = txt;
         db.saveDoc(note.data().cfg);
+        content.html(html);
+        content.show();
         ta.remove();
       });
-    content.text('').append(ta);
+    note.append(ta);
     ta.focus();
   });
 
