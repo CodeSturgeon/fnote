@@ -29,7 +29,6 @@ function makeNote(cfg){
 var loadIncrement = 20;
 function addNote(note, cfg) {
   //loadIncrement = loadIncrement || 20;
-  console.log('hello');
   cfg = cfg || {};
   cfg.top = cfg.top || loadIncrement+'px';
   cfg.left = cfg.left || loadIncrement+'px';
@@ -77,6 +76,13 @@ function go() {
   $('#newBtn').click(function newClick(){
   	var note = makeNote();
     addNote(note);
+    db.saveDoc(note.data().cfg, {
+      success: function firstNoteSave(data) {
+        note.data().cfg._id = data.id;
+        console.log(note.data().cfg);
+      }
+    });
+    bindNotes();
   });
 }
 
@@ -166,7 +172,7 @@ function bindNotes() {
       .unbind('mouseup', unbinder);
   };
 
-  $('.note-heading').mousedown(function(event) {
+  $('.note-heading').mousedown(function noteDrag(event) {
     x = event.pageX;
     y = event.pageY;
     target = $(this).parent();
@@ -174,7 +180,7 @@ function bindNotes() {
     $(document).bind('mouseup', unbinder);
   });
 
-  $('.note-draghandle').mousedown(function(event) {
+  $('.note-draghandle').mousedown(function noteResize(event) {
     x = event.pageX;
     y = event.pageY;
     target = $(this).parent();
@@ -183,7 +189,7 @@ function bindNotes() {
   });
 
   // Editing
-  $('.note').dblclick(function(event) {
+  $('.note').dblclick(function editNote(event) {
     /*jshint es5:true */
     var note = $(event.target).parent();
     var content = note.children('.note-content');
