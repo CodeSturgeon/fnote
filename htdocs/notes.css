@@ -1,5 +1,13 @@
 /* @override http://localhost:1337/fnote/notes.css */
 
+div#newBtn {
+	float: right;
+	background-color: #1fc2c5;
+	border-style: solid;
+	border-width: 2px;
+	padding: 2px;
+}
+
 div.note {
 	border-style: solid;
 	position: absolute;

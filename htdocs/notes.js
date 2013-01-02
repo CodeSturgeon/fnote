@@ -16,7 +16,7 @@ function makeNote(cfg){
   cfg.heading = cfg.heading || 'New Header';
   cfg.content = cfg.content || 'Your content here';
   var html = txt2Html(cfg.content);
-  ddiv = $('<div/>', {class: 'note'});
+  var ddiv = $('<div/>', {class: 'note'});
   ddiv.append(
     $('<div/>', {class:'note-heading'}).text(cfg.heading),
     $('<div/>', {class:'note-content'}).html(html),
@@ -28,6 +28,8 @@ function makeNote(cfg){
 
 var loadIncrement = 20;
 function addNote(note, cfg) {
+  //loadIncrement = loadIncrement || 20;
+  console.log('hello');
   cfg = cfg || {};
   cfg.top = cfg.top || loadIncrement+'px';
   cfg.left = cfg.left || loadIncrement+'px';
@@ -68,9 +70,13 @@ function go() {
     },
     error: function(error) {console.log(error);}
   });
-  $(window).unload(function(){
+  $(window).unload(function windowUnload(){
     $.ajaxSetup({async:false});
     saveSheet();
+  });
+  $('#newBtn').click(function newClick(){
+  	var note = makeNote();
+    addNote(note);
   });
 }
 
