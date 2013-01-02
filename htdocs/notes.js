@@ -82,7 +82,7 @@ function go() {
         console.log(note.data().cfg);
       }
     });
-    bindNotes();
+    bindNotes(note);
   });
 }
 
@@ -91,7 +91,7 @@ function loadNote(nLink) {
     success: function(data) {
       var note = makeNote(data);
       addNote(note, nLink);
-      bindNotes();
+      bindNotes(note);
     },
     error: function(status) {
       console.log(status);
@@ -136,9 +136,9 @@ function saveSheet() {
   });
 }
 
-function bindNotes() {
+function bindNotes(notes) {
   // Moving and resizing
-  var x = 0, y = 0; // Draging and resizing vars
+  var x = 0, y = 0; // Dragging and resizing vars
   var target = '';
 
   var mover = function(event) {
@@ -172,7 +172,7 @@ function bindNotes() {
       .unbind('mouseup', unbinder);
   };
 
-  $('.note-heading').mousedown(function noteDrag(event) {
+  notes.children('.note-heading').mousedown(function noteDrag(event) {
     x = event.pageX;
     y = event.pageY;
     target = $(this).parent();
@@ -180,7 +180,7 @@ function bindNotes() {
     $(document).bind('mouseup', unbinder);
   });
 
-  $('.note-draghandle').mousedown(function noteResize(event) {
+  notes.children('.note-draghandle').mousedown(function noteResize(event) {
     x = event.pageX;
     y = event.pageY;
     target = $(this).parent();
@@ -189,7 +189,7 @@ function bindNotes() {
   });
 
   // Editing
-  $('.note').dblclick(function editNote(event) {
+  notes.dblclick(function editNote(event) {
     /*jshint es5:true */
     var note = $(event.target).parent();
     var content = note.children('.note-content');
