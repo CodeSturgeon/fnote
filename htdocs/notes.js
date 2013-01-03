@@ -10,6 +10,15 @@ function txt2Html(str){
   return html;
 }
 
+(function($){
+    $.fn.disableSelection = function() {
+        return this
+                 .attr('unselectable', 'on')
+                 .css('user-select', 'none')
+                 .on('selectstart', false);
+    };
+})(jQuery);
+
 function makeNote(cfg){
   /*jshint es5:true */
   cfg = cfg || {};
@@ -232,4 +241,5 @@ function bindNotes(notes) {
     ta.focus();
   });
 
+  notes.disableSelection();
 }
