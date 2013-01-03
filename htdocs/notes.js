@@ -13,12 +13,12 @@ function txt2Html(str){
 function makeNote(cfg){
   /*jshint es5:true */
   cfg = cfg || {};
-  cfg.heading = cfg.heading || 'New Header';
+  cfg.heading = cfg.heading || ' ';
   cfg.content = cfg.content || 'Your content here';
   var html = txt2Html(cfg.content);
   var ddiv = $('<div/>', {class: 'note'});
   ddiv.append(
-    $('<div/>', {class:'note-heading'}).text(cfg.heading),
+    $('<div/>', {class:'note-heading'}).html(txt2Html(cfg.heading)),
     $('<div/>', {class:'note-content'}).html(html),
     $('<div/>', {class:'note-draghandle'})
   );
@@ -35,8 +35,8 @@ function addNote(note, cfg) {
   if (cfg.top === loadIncrement+'px' && cfg.left == loadIncrement+'px') {
     loadIncrement = loadIncrement + 25;
   }
-  cfg.height = cfg.height || '';
-  cfg.width = cfg.width || '';
+  cfg.height = cfg.height || '100px';
+  cfg.width = cfg.width || '150px';
   note.css('top', cfg.top);
   note.css('left', cfg.left);
   note.css('width', cfg.width);
@@ -53,6 +53,7 @@ function notesMap(doc) {
 function go() {
   $.couch.urlPrefix = 'http://localhost:1337';
   sheetName = getParameterByName('sheet') || 'test-sheet';
+  rev = '';
   db = $.couch.db('notes');
   $.couch.login({
     name: 'test',
@@ -110,10 +111,10 @@ function loadSheet(sheetData) {
 
 function saveSheet() {
   var sheetDoc = {
-    _id: "test-sheet",
-    _rev: rev,
+    _id: sheetName,
     notes: []
   };
+  if (rev !== '') sheetDoc._rev = rev;
   $('.note').each(function(i, noteDiv){
     var jNote = $(noteDiv);
     var noteCfg = jNote.data().cfg;
@@ -191,7 +192,7 @@ function bindNotes(notes) {
       input.blur(function(){
         var txt = input.val();
         note.data().cfg.heading = txt;
-        heading.text(txt);
+        heading.html(txt2Html(txt));
         input.remove();
         db.saveDoc(note.data().cfg);
       });
