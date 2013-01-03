@@ -33,6 +33,11 @@ div.note-draghandle {
 	position: absolute;
 }
 
+input.editor{
+  width: 100%;
+  margin: 0;
+}
+
 div.note-content{
 	opacity: 1;
 	background-color: #aefa80;

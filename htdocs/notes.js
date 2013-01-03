@@ -172,13 +172,32 @@ function bindNotes(notes) {
       .unbind('mouseup', unbinder);
   };
 
-  notes.children('.note-heading').mousedown(function noteDrag(event) {
-    x = event.pageX;
-    y = event.pageY;
-    target = $(this).parent();
-    $(document).bind('mousemove', mover);
-    $(document).bind('mouseup', unbinder);
-  });
+  notes.children('.note-heading')
+    .mousedown(function noteDrag(event) {
+      x = event.pageX;
+      y = event.pageY;
+      target = $(this).parent();
+      $(document).bind('mousemove', mover);
+      $(document).bind('mouseup', unbinder);
+    })
+    .dblclick(function headerEdit(event) {
+      console.log('d');
+      var heading = $(this);
+      var note = heading.parent();
+      console.log(note);
+      heading.text('');
+      var input = $('<input/>',{type:'text', 'class':'editor'});
+      input.val(note.data().cfg.heading);
+      input.blur(function(){
+        var txt = input.val();
+        note.data().cfg.heading = txt;
+        heading.text(txt);
+        input.remove();
+        db.saveDoc(note.data().cfg);
+      });
+      note.prepend(input);
+      input.focus();
+    });
 
   notes.children('.note-draghandle').mousedown(function noteResize(event) {
     x = event.pageX;
@@ -189,7 +208,7 @@ function bindNotes(notes) {
   });
 
   // Editing
-  notes.dblclick(function editNote(event) {
+  notes.children('.note-content').dblclick(function editNote(event) {
     /*jshint es5:true */
     var note = $(event.target).parent();
     var content = note.children('.note-content');
@@ -199,7 +218,7 @@ function bindNotes(notes) {
       .width(note.width()-6)
       .height(note.height()-(heading.height()+6))
       .text(note.data().cfg.content)
-      .blur(function(event){
+      .blur(function cleanupEditor(event){
         var txt = ta.val();
         var html = txt2Html(txt);
         note.data().cfg.content = txt;
