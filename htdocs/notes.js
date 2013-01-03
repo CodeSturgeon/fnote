@@ -193,11 +193,12 @@ function bindNotes(notes) {
     /*jshint es5:true */
     var note = $(event.target).parent();
     var content = note.children('.note-content');
+    var heading = note.children('.note-heading');
     content.hide();
     var ta = $('<textarea/>',{class:'editor'})
       .width(note.width()-6)
-      .height(note.height()-24)
-      .text(content.text())
+      .height(note.height()-(heading.height()+6))
+      .text(note.data().cfg.content)
       .blur(function(event){
         var txt = ta.val();
         var html = txt2Html(txt);
