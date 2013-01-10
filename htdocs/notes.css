@@ -14,10 +14,10 @@ div.note {
 	position: absolute;
 	border-width: 2px;
 	overflow: hidden;
+	cursor: move;
 }
 
 div.note-heading {
-	cursor: move;
 	background-color: #d2edff;
 	text-align: center;
 }

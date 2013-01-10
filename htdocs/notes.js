@@ -36,6 +36,7 @@ function makeNote(cfg){
 }
 
 var loadIncrement = 20;
+var topZ = 1;
 function addNote(note, cfg) {
   //loadIncrement = loadIncrement || 20;
   cfg = cfg || {};
@@ -46,6 +47,8 @@ function addNote(note, cfg) {
   }
   cfg.height = cfg.height || '100px';
   cfg.width = cfg.width || '150px';
+  cfg.zIndex = cfg.zIndex || 1;
+  if (cfg.zIndex > topZ) { topZ = cfg.zIndex; }
   note.css('top', cfg.top);
   note.css('left', cfg.left);
   note.css('width', cfg.width);
@@ -84,7 +87,7 @@ function go() {
     saveSheet();
   });
   $('#newBtn').click(function newClick(){
-  	var note = makeNote();
+    var note = makeNote();
     addNote(note);
     db.saveDoc(note.data().cfg, {
       success: function firstNoteSave(data) {
@@ -182,43 +185,46 @@ function bindNotes(notes) {
       .unbind('mouseup', unbinder);
   };
 
-  notes.children('.note-heading')
-    .mousedown(function noteDrag(event) {
-      x = event.pageX;
-      y = event.pageY;
-      target = $(this).parent();
-      $(document).bind('mousemove', mover);
-      $(document).bind('mouseup', unbinder);
-    })
-    .dblclick(function headerEdit(event) {
-      console.log('d');
-      var heading = $(this);
-      var note = heading.parent();
-      console.log(note);
-      heading.text('');
-      var input = $('<input/>',{type:'text', 'class':'editor'});
-      input.val(note.data().cfg.heading);
-      input.blur(function(){
-        var txt = input.val();
-        note.data().cfg.heading = txt;
-        heading.html(txt2Html(txt));
-        input.remove();
-        db.saveDoc(note.data().cfg);
-      });
-      note.prepend(input);
-      input.focus();
-    });
+  function noteDrag(event) {
+    x = event.pageX;
+    y = event.pageY;
+    target = $(this);
+    console.log('z check');
+    console.log(target.css('z-index'));
+    if (target.css('z-index') < topZ) {
+      console.log('z time');
+      topZ += 1;
+      target.css('z-index', topZ);
+    }
+    $(document).bind('mousemove', mover);
+    $(document).bind('mouseup', unbinder);
+  }
 
-  notes.children('.note-draghandle').mousedown(function noteResize(event) {
+  function headerEdit(event) {
+    var heading = $(this);
+    var note = heading.parent();
+    console.log(note);
+    heading.text('');
+    var input = $('<input/>',{type:'text', 'class':'editor'});
+    input.val(note.data().cfg.heading);
+    input.blur(function(){
+      var txt = input.val();
+      note.data().cfg.heading = txt;
+      heading.html(txt2Html(txt));
+      input.remove();
+      db.saveDoc(note.data().cfg);
+    });
+  }
+
+  function noteResize(event) {
     x = event.pageX;
     y = event.pageY;
     target = $(this).parent();
     $(document).bind('mousemove', resizer);
     $(document).bind('mouseup', unbinder);
-  });
+  }
 
-  // Editing
-  notes.children('.note-content').dblclick(function editNote(event) {
+  function editNote(event) {
     /*jshint es5:true */
     var note = $(event.target).parent();
     var content = note.children('.note-content');
@@ -239,7 +245,18 @@ function bindNotes(notes) {
       });
     note.append(ta);
     ta.focus();
-  });
+  }
+
+  notes.mousedown(noteDrag);
+
+  notes.children('.note-heading')
+    .dblclick(headerEdit);
+
+  notes.children('.note-draghandle').mousedown(noteResize);
+
+  // Editing
+  notes.children('.note-content')
+    .dblclick(editNote);
 
   notes.disableSelection();
 }
