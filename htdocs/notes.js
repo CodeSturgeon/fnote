@@ -47,8 +47,9 @@ function addNote(note, cfg) {
   }
   cfg.height = cfg.height || '100px';
   cfg.width = cfg.width || '150px';
-  cfg.zIndex = cfg.zIndex || 1;
+  cfg.zIndex = cfg.zIndex || (topZ+1);
   if (cfg.zIndex > topZ) { topZ = cfg.zIndex; }
+  note.css('z-index', cfg.zIndex);
   note.css('top', cfg.top);
   note.css('left', cfg.left);
   note.css('width', cfg.width);
@@ -249,14 +250,11 @@ function bindNotes(notes) {
 
   notes.mousedown(noteDrag);
 
-  notes.children('.note-heading')
-    .dblclick(headerEdit);
+  notes.children('.note-heading').dblclick(headerEdit);
 
   notes.children('.note-draghandle').mousedown(noteResize);
 
-  // Editing
-  notes.children('.note-content')
-    .dblclick(editNote);
+  notes.children('.note-content').dblclick(editNote);
 
   notes.disableSelection();
 }
