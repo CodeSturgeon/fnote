@@ -190,8 +190,6 @@ function bindNotes(notes) {
     x = event.pageX;
     y = event.pageY;
     target = $(this);
-    console.log('z check');
-    console.log(target.css('z-index'));
     if (target.css('z-index') < topZ) {
       console.log('z time');
       topZ += 1;
