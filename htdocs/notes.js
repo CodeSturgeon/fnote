@@ -15,11 +15,9 @@ function makeNote(cfg){
   cfg = cfg || {};
   cfg.heading = cfg.heading || ' ';
   cfg.content = cfg.content || 'Your content here';
-  var html = txt2Html(cfg.content);
-  var ddiv = $('<div/>', {'id':cfg._id, class: 'note note-content'});
-  ddiv.html(html);
-  ddiv.prepend(
-    $('<div/>', {class:'note-heading'}).html(txt2Html(cfg.heading))
+  var ddiv = $('<div/>', {'id':cfg._id, class: 'note'});
+  ddiv.append(
+    $('<div/>', {class:'note-content'}).html(txt2Html(cfg.content))
   );
   ddiv.data().cfg = cfg;
   return ddiv;
@@ -40,13 +38,6 @@ function addNote(note, cfg) {
   note.css('width', cfg.width);
   note.css('height', cfg.height);
   $('.container').append(note);
-  note.draggable().resizable();
-}
-
-function notesMap(doc) {
-  if (doc.type==='note') {
-    emit(doc._id, doc);
-  }
 }
 
 function go() {
@@ -76,6 +67,7 @@ function go() {
   $('#newBtn').click(function newClick(){
     var note = makeNote();
     addNote(note);
+    bindNotes(note);
     db.saveDoc(note.data().cfg, {
       success: function firstNoteSave(data) {
         note.data().cfg._id = data.id;
@@ -90,7 +82,7 @@ function loadNote(nLink) {
     success: function(data) {
       var note = makeNote(data);
       addNote(note, nLink);
-      //bindNotes(note);
+      bindNotes(note);
     },
     error: function(status) {
       console.log(status);
@@ -133,4 +125,60 @@ function saveSheet() {
       console.log(status);
     }
   });
+}
+
+function bindNotes(notes) {
+  function headerEdit(event) {
+    var heading = $(this);
+    var note = heading.parent();
+    console.log(note);
+    heading.text('');
+    var input = $('<input/>',{type:'text', 'class':'editor'});
+    input.val(note.data().cfg.heading);
+    input.blur(function(){
+      var txt = input.val();
+      note.data().cfg.heading = txt;
+      heading.html(txt2Html(txt));
+      input.remove();
+      db.saveDoc(note.data().cfg);
+    });
+  }
+
+  function noteResize(event) {
+    x = event.pageX;
+    y = event.pageY;
+    target = $(this).parent();
+    $(document).bind('mousemove', resizer);
+    $(document).bind('mouseup', unbinder);
+  }
+
+  function editNote(event) {
+    /*jshint es5:true */
+    var note = $(event.target).parent();
+    var content = note.children('.note-content');
+    var heading = note.children('.note-heading');
+    content.hide();
+    var ta = $('<textarea/>',{class:'editor'})
+      .width(note.width()-6)
+      .height(note.height()-(heading.height()+6))
+      .text(note.data().cfg.content)
+      .blur(function cleanupEditor(event){
+        var txt = ta.val();
+        var html = txt2Html(txt);
+        note.data().cfg.content = txt;
+        db.saveDoc(note.data().cfg);
+        content.html(html);
+        content.show();
+        ta.remove();
+      });
+    note.append(ta);
+    ta.focus();
+  }
+
+  notes
+    .draggable()
+    .resizable()
+    .dblclick(editNote)
+    .children('.note-heading')
+      .dblclick(headerEdit)
 }
