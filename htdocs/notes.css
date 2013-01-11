@@ -39,7 +39,6 @@ input.editor{
 }
 
 div.note-content{
-	opacity: 1;
 	background-color: #aefa80;
 	height: 100%;
   font-size: small;
@@ -52,7 +51,6 @@ textarea.editor {
 }
 
 div.container {
-	background-color: #ff6348;
 	width: 100%;
 	height: 100%;
 }

@@ -10,35 +10,23 @@ function txt2Html(str){
   return html;
 }
 
-(function($){
-    $.fn.disableSelection = function() {
-        return this
-                 .attr('unselectable', 'on')
-                 .css('user-select', 'none')
-                 .on('selectstart', false);
-    };
-})(jQuery);
-
 function makeNote(cfg){
   /*jshint es5:true */
   cfg = cfg || {};
   cfg.heading = cfg.heading || ' ';
   cfg.content = cfg.content || 'Your content here';
   var html = txt2Html(cfg.content);
-  var ddiv = $('<div/>', {class: 'note'});
-  ddiv.append(
-    $('<div/>', {class:'note-heading'}).html(txt2Html(cfg.heading)),
-    $('<div/>', {class:'note-content'}).html(html),
-    $('<div/>', {class:'note-draghandle'})
+  var ddiv = $('<div/>', {'id':cfg._id, class: 'note note-content'});
+  ddiv.html(html);
+  ddiv.prepend(
+    $('<div/>', {class:'note-heading'}).html(txt2Html(cfg.heading))
   );
   ddiv.data().cfg = cfg;
   return ddiv;
 }
 
 var loadIncrement = 20;
-var topZ = 1;
 function addNote(note, cfg) {
-  //loadIncrement = loadIncrement || 20;
   cfg = cfg || {};
   cfg.top = cfg.top || loadIncrement+'px';
   cfg.left = cfg.left || loadIncrement+'px';
@@ -47,14 +35,12 @@ function addNote(note, cfg) {
   }
   cfg.height = cfg.height || '100px';
   cfg.width = cfg.width || '150px';
-  cfg.zIndex = cfg.zIndex || (topZ+1);
-  if (cfg.zIndex > topZ) { topZ = cfg.zIndex; }
-  note.css('z-index', cfg.zIndex);
   note.css('top', cfg.top);
   note.css('left', cfg.left);
   note.css('width', cfg.width);
   note.css('height', cfg.height);
   $('.container').append(note);
+  note.draggable().resizable();
 }
 
 function notesMap(doc) {
@@ -96,7 +82,6 @@ function go() {
         console.log(note.data().cfg);
       }
     });
-    bindNotes(note);
   });
 }
 
@@ -105,7 +90,7 @@ function loadNote(nLink) {
     success: function(data) {
       var note = makeNote(data);
       addNote(note, nLink);
-      bindNotes(note);
+      //bindNotes(note);
     },
     error: function(status) {
       console.log(status);
@@ -148,111 +133,4 @@ function saveSheet() {
       console.log(status);
     }
   });
-}
-
-function bindNotes(notes) {
-  // Moving and resizing
-  var x = 0, y = 0; // Dragging and resizing vars
-  var target = '';
-
-  var mover = function(event) {
-    var deltaX = event.pageX - x,
-        deltaY = event.pageY - y;
-
-    x = event.pageX;
-    y = event.pageY;
-
-    target.offset({
-        left: target.offset().left + deltaX,
-        top: target.offset().top + deltaY
-    });
-  };
-
-  var resizer = function(event) {
-    var deltaX = event.pageX - x,
-        deltaY = event.pageY - y;
-
-    x = event.pageX;
-    y = event.pageY;
-
-    target.width(target.width()+deltaX);
-    target.height(target.height()+deltaY);
-  };
-
-  var unbinder = function(event) {
-    $(document)
-      .unbind('mousemove', mover)
-      .unbind('mousemove', resizer)
-      .unbind('mouseup', unbinder);
-  };
-
-  function noteDrag(event) {
-    x = event.pageX;
-    y = event.pageY;
-    target = $(this);
-    if (target.css('z-index') < topZ) {
-      console.log('z time');
-      topZ += 1;
-      target.css('z-index', topZ);
-    }
-    $(document).bind('mousemove', mover);
-    $(document).bind('mouseup', unbinder);
-  }
-
-  function headerEdit(event) {
-    var heading = $(this);
-    var note = heading.parent();
-    console.log(note);
-    heading.text('');
-    var input = $('<input/>',{type:'text', 'class':'editor'});
-    input.val(note.data().cfg.heading);
-    input.blur(function(){
-      var txt = input.val();
-      note.data().cfg.heading = txt;
-      heading.html(txt2Html(txt));
-      input.remove();
-      db.saveDoc(note.data().cfg);
-    });
-  }
-
-  function noteResize(event) {
-    x = event.pageX;
-    y = event.pageY;
-    target = $(this).parent();
-    $(document).bind('mousemove', resizer);
-    $(document).bind('mouseup', unbinder);
-  }
-
-  function editNote(event) {
-    /*jshint es5:true */
-    var note = $(event.target).parent();
-    var content = note.children('.note-content');
-    var heading = note.children('.note-heading');
-    content.hide();
-    var ta = $('<textarea/>',{class:'editor'})
-      .width(note.width()-6)
-      .height(note.height()-(heading.height()+6))
-      .text(note.data().cfg.content)
-      .blur(function cleanupEditor(event){
-        var txt = ta.val();
-        var html = txt2Html(txt);
-        note.data().cfg.content = txt;
-        db.saveDoc(note.data().cfg);
-        content.html(html);
-        content.show();
-        ta.remove();
-      });
-    note.append(ta);
-    ta.focus();
-  }
-
-  notes.mousedown(noteDrag);
-
-  notes.children('.note-heading').dblclick(headerEdit);
-
-  notes.children('.note-draghandle').mousedown(noteResize);
-
-  notes.children('.note-content').dblclick(editNote);
-
-  notes.disableSelection();
 }
