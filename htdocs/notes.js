@@ -128,7 +128,7 @@ function saveSheet() {
 function bindNotes(notes) {
   function editNote(event) {
     /*jshint es5:true */
-    var note = $(event.target).parent();
+    var note = $(event.target).parents('.note');
     var content = note.children('.note-content');
     note.children().hide();
 
