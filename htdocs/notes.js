@@ -5,15 +5,12 @@ function getParameterByName(name) {
 }
 
 function txt2Html(str){
-  var html = str.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br/>$2');
-  html = html.replace(/ /g, '&nbsp');
-  return html;
+  return marked(str);
 }
 
 function makeNote(cfg){
   /*jshint es5:true */
   cfg = cfg || {};
-  cfg.heading = cfg.heading || ' ';
   cfg.content = cfg.content || 'Your content here';
   var ddiv = $('<div/>', {'id':cfg._id, class: 'note'});
   ddiv.append(
@@ -41,6 +38,7 @@ function addNote(note, cfg) {
 }
 
 function go() {
+  marked.setOptions({breaks: true});
   $.couch.urlPrefix = 'http://localhost:1337';
   sheetName = getParameterByName('sheet') || 'test-sheet';
   rev = '';
@@ -128,30 +126,6 @@ function saveSheet() {
 }
 
 function bindNotes(notes) {
-  function headerEdit(event) {
-    var heading = $(this);
-    var note = heading.parent();
-    console.log(note);
-    heading.text('');
-    var input = $('<input/>',{type:'text', 'class':'editor'});
-    input.val(note.data().cfg.heading);
-    input.blur(function(){
-      var txt = input.val();
-      note.data().cfg.heading = txt;
-      heading.html(txt2Html(txt));
-      input.remove();
-      db.saveDoc(note.data().cfg);
-    });
-  }
-
-  function noteResize(event) {
-    x = event.pageX;
-    y = event.pageY;
-    target = $(this).parent();
-    $(document).bind('mousemove', resizer);
-    $(document).bind('mouseup', unbinder);
-  }
-
   function editNote(event) {
     /*jshint es5:true */
     var note = $(event.target).parent();

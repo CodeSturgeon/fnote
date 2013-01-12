@@ -54,3 +54,11 @@ div.container {
 	width: 100%;
 	height: 100%;
 }
+
+div.note-content h1:first-child {
+  text-align: center;
+}
+
+div.note-content :first-child {
+  margin-top: 0;
+}
