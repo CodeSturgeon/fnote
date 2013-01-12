@@ -156,21 +156,21 @@ function bindNotes(notes) {
     /*jshint es5:true */
     var note = $(event.target).parent();
     var content = note.children('.note-content');
-    var heading = note.children('.note-heading');
-    content.hide();
+    note.children().hide();
+
     var ta = $('<textarea/>',{class:'editor'})
       .width(note.width()-6)
-      .height(note.height()-(heading.height()+6))
+      .height(note.height()-6)
       .text(note.data().cfg.content)
       .blur(function cleanupEditor(event){
         var txt = ta.val();
-        var html = txt2Html(txt);
         note.data().cfg.content = txt;
         db.saveDoc(note.data().cfg);
-        content.html(html);
-        content.show();
+        content.html(txt2Html(txt));
         ta.remove();
+        note.children().show();
       });
+
     note.append(ta);
     ta.focus();
   }
@@ -178,7 +178,5 @@ function bindNotes(notes) {
   notes
     .draggable()
     .resizable()
-    .dblclick(editNote)
-    .children('.note-heading')
-      .dblclick(headerEdit)
+    .dblclick(editNote);
 }
