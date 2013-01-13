@@ -17,32 +17,11 @@ div.note {
 	cursor: move;
 }
 
-div.note-heading {
-	background-color: #d2edff;
-	text-align: center;
-}
-
-div.note-draghandle {
-	background-color: #72ccff;
-	cursor: se-resize;
-	width: 10px;
-	height: 10px;
-	bottom: 0;
-	right: 0;
-	opacity: 0.4;
-	position: absolute;
-}
-
-input.editor{
-  width: 100%;
-  margin: 0;
-}
-
 div.note-content{
 	background-color: #aefa80;
 	height: 100%;
   font-size: small;
-  padding: 2px;
+  padding: 4px;
 }
 
 textarea.editor {
@@ -55,8 +34,16 @@ div.container {
 	height: 100%;
 }
 
-div.note-content h1:first-child {
+div.note-content h1 {
   text-align: center;
+}
+
+div.note-content h1,h2,h3,h4,h5 {
+  background-color: #4be840;
+}
+
+div.note-content h2,h3,h4,h5 {
+  padding-left: 10px;
 }
 
 div.note-content :first-child {
