@@ -4,6 +4,7 @@
 div.btn-group {
 	padding-top: 20px;
 	padding-left: 20px;
+	z-index: 9999;
 }
 
 div.note {
@@ -11,6 +12,7 @@ div.note {
 	border-width: 2px;
 	overflow: hidden;
 	cursor: move;
+	position: absolute;
 }
 
 div.note-content{

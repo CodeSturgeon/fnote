@@ -176,7 +176,7 @@ function bindNotes(notes) {
   }
 
   notes
-    .draggable()
+    .draggable({stack:'.note'})
     .resizable()
     .dblclick(editNote);
 }
