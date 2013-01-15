@@ -12,7 +12,10 @@ function makeNote(cfg){
   /*jshint es5:true */
   cfg = cfg || {};
   cfg.content = cfg.content || 'Your content here';
-  var ddiv = $('<div/>', {'id':cfg._id, class: 'note'});
+  var ddiv = $('<div/>', {
+    class: 'note',
+    'id':cfg._id
+  });
   ddiv.append(
     $('<div/>', {class:'note-content'}).html(txt2Html(cfg.content))
   );
@@ -20,7 +23,7 @@ function makeNote(cfg){
   return ddiv;
 }
 
-var loadIncrement = 20;
+var loadIncrement = 60;
 function addNote(note, cfg) {
   cfg = cfg || {};
   cfg.top = cfg.top || loadIncrement+'px';
@@ -61,6 +64,29 @@ function go() {
   $(window).unload(function windowUnload(){
     $.ajaxSetup({async:false});
     saveSheet();
+  });
+  $('#removeBtn').click(function populateMenu(){
+    var menu = $('.dropdown-menu');
+    menu.children().remove();
+    $('.note').each(function (index, element){
+      console.log(element);
+      var note = $(element);
+      console.log(note);
+      var cfg = note.data().cfg;
+      var mark = cfg.content.indexOf('\n');
+      if (mark === -1 || mark > 30) {mark = 25;}
+      var snip = cfg.content.substr(0,mark);
+      var item = $('<li/>').append(
+        $('<a/>',{
+          tabindex:'-1',
+          href:'#',
+          text:snip
+        }).click(function killNote(){
+          note.remove();
+        })
+      );
+      menu.append(item);
+    });
   });
   $('#newBtn').click(function newClick(){
     var note = makeNote();
