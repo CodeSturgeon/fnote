@@ -55,7 +55,8 @@ function go() {
         error: function(error) {
           // FIXME should make the sheet here
           console.log(error);
-          alert('could not find sheet');
+          alert('did not find sheet - creating');
+          saveSheet();
         }
       });
     },
@@ -69,9 +70,7 @@ function go() {
     var menu = $('.dropdown-menu');
     menu.children().remove();
     $('.note').each(function (index, element){
-      console.log(element);
       var note = $(element);
-      console.log(note);
       var cfg = note.data().cfg;
       var mark = cfg.content.indexOf('\n');
       if (mark === -1 || mark > 30) {mark = 25;}
@@ -83,6 +82,7 @@ function go() {
           text:snip
         }).click(function killNote(){
           note.remove();
+          saveSheet();
         })
       );
       menu.append(item);
@@ -98,6 +98,7 @@ function go() {
         console.log(note.data().cfg);
       }
     });
+    saveSheet();
   });
 }
 
@@ -146,6 +147,7 @@ function saveSheet() {
       rev = data.rev;
     },
     error: function(status) {
+      alert('Sheet save failed :/');
       console.log(status);
     }
   });
@@ -176,7 +178,12 @@ function bindNotes(notes) {
   }
 
   notes
-    .draggable({stack:'.note'})
-    .resizable()
+    .draggable({
+      stack:'.note',
+      stop: saveSheet
+    })
+    .resizable({
+      stop:saveSheet
+    })
     .dblclick(editNote);
 }
