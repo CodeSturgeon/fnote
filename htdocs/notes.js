@@ -37,6 +37,15 @@ function addNote(note, cfg) {
   note.css('left', cfg.left);
   note.css('width', cfg.width);
   note.css('height', cfg.height);
+
+  // Make sure this note is on top
+  var topZ = 0;
+  $('.note').each(function (index){
+    var myZ = $(this).css('z-index');
+    if (myZ > topZ) {topZ = myZ;}
+  });
+  note.css('z-index', topZ);
+
   $('.container').append(note);
 }
 
