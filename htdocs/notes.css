@@ -18,8 +18,9 @@ div.note {
 div.note-content{
 	background-color: #aefa80;
 	height: 100%;
-  font-size: small;
   padding: 4px;
+  font: small "Lucida Grande", Lucida, Verdana, sans-serif;
+  font-size: 13px;
 }
 
 textarea.editor {
@@ -33,14 +34,35 @@ div.container {
 }
 
 div.note-content h1 {
+  font-size: 22px;
   text-align: center;
 }
 
-div.note-content h1,h2,h3,h4,h5 {
+div.note-content h2 {
+  font-size: 18px;
+}
+
+div.note-content h3 {
+  font-size: 15px;
+}
+
+div.note-content h4 {
+  font-size: 13px;
+}
+
+div.note-content h5 {
+  font-size: 11px;
+}
+
+div.note-content h6 {
+  font-size: 9px;
+}
+
+div.note-content h1,h2,h3,h4,h5,h6 {
   background-color: #4be840;
 }
 
-div.note-content h2,h3,h4,h5 {
+div.note-content h2,h3,h4,h5,h6 {
   padding-left: 10px;
 }
 
