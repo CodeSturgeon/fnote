@@ -177,10 +177,13 @@ function bindNotes(notes) {
       .blur(function cleanupEditor(event){
         var txt = ta.val();
         note.data().cfg.content = txt;
-        db.saveDoc(note.data().cfg);
-        content.html(txt2Html(txt));
-        ta.remove();
-        note.children().show();
+        db.saveDoc(note.data().cfg, {
+          success:function(){
+            content.html(txt2Html(txt));
+            ta.remove();
+            note.children().show();
+          }
+        });
       });
 
     note.append(ta);
