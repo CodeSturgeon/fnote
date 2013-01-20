@@ -101,6 +101,7 @@ function go() {
     var note = makeNote();
     addNote(note);
     bindNotes(note);
+    note.dblclick();
     db.saveDoc(note.data().cfg, {
       success: function firstNoteSave(data) {
         note.data().cfg._id = data.id;
@@ -165,7 +166,7 @@ function saveSheet() {
 function bindNotes(notes) {
   function editNote(event) {
     /*jshint es5:true */
-    var note = $(event.target).parents('.note');
+    var note = $(this);
     var content = note.children('.note-content');
     note.children().hide();
 
