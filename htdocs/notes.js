@@ -128,6 +128,7 @@ function loadNote(nLink) {
 
 function loadSheet(sheetData) {
   // Assuming that data is a sheet doc
+  document.title = sheetData._id;
   rev = sheetData._rev;
   for (var nIdx in sheetData.notes) {
     var nLink = sheetData.notes[nIdx];
