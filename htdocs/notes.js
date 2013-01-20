@@ -12,6 +12,7 @@ function makeNote(cfg){
   /*jshint es5:true */
   cfg = cfg || {};
   cfg.content = cfg.content || 'Your content here';
+  cfg.time_create = new Date().getTime();
   var ddiv = $('<div/>', {
     class: 'note',
     'id':cfg._id
@@ -177,6 +178,7 @@ function bindNotes(notes) {
       .blur(function cleanupEditor(event){
         var txt = ta.val();
         note.data().cfg.content = txt;
+        note.data().cfg.time_update = new Date().getTime();
         db.saveDoc(note.data().cfg, {
           success:function(){
             content.html(txt2Html(txt));
