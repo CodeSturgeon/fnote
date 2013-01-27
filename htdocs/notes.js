@@ -26,6 +26,7 @@ function makeNote(cfg){
 
 var loadIncrement = 60;
 function addNote(note, cfg) {
+  // cfg is the noteLink data
   cfg = cfg || {};
   cfg.top = cfg.top || loadIncrement+'px';
   cfg.left = cfg.left || loadIncrement+'px';
@@ -47,7 +48,7 @@ function addNote(note, cfg) {
   });
   note.css('z-index', topZ);
 
-  $('.container').append(note);
+  $('.sheet').append(note);
 }
 
 function go() {
