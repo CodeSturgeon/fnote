@@ -50,27 +50,17 @@ function addNote(note, cfg) {
   $('.container').append(note);
 }
 
-function go() {
+function go(dbName) {
   marked.setOptions({breaks: true});
-  $.couch.urlPrefix = 'http://localhost:1337';
   sheetName = getParameterByName('sheet') || 'test-sheet';
   rev = '';
-  db = $.couch.db('notes');
-  $.couch.login({
-    name: 'test',
-    password: 'test',
-    success: function(data) {
-      db.openDoc(sheetName, {
-        success: function(sheetDoc) { loadSheet(sheetDoc); },
-        error: function(error) {
-          // FIXME should make the sheet here
-          console.log(error);
-          alert('did not find sheet - creating');
-          saveSheet();
-        }
-      });
-    },
-    error: function(error) {console.log(error);}
+  db = $.couch.db(dbName);
+  db.openDoc(sheetName, {
+    success: function(sheetDoc) { loadSheet(sheetDoc); },
+    error: function(error) {
+      alert('did not find sheet - creating');
+      saveSheet();
+    }
   });
   $(window).unload(function windowUnload(){
     $.ajaxSetup({async:false});
